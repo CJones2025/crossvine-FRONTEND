@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register 1</title>
+    <link rel="stylesheet" href="demo1.css" />
+    <!-- Modular JavaScript files -->
+    <script src="js/user-manager.js" defer></script>
+    <script src="js/demo-data.js" defer></script>
+    <script src="js/theme-manager.js" defer></script>
+    <script src="js/storage-manager.js" defer></script>
+    <script src="js/media-manager.js" defer></script>
+    <script src="js/posts-manager.js" defer></script>
+    <script src="js/auth-manager.js" defer></script>
+    <script src="js/ui-manager.js" defer></script>
+    <script src="js/utilities.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <a href="demo1.html" class="logo-link">
+        <div class="logo-container">
+          <img src="IMG/smaller.png" alt="Logo" class="logo" />
+          <span class="site-name">Crossvine</span>
+        </div>
+      </a>
+      <div class="search-container">
+        <select
+          class="search-type-dropdown"
+          id="searchType"
+          onchange="updateSearchPlaceholder()"
+        >
+          <option value="hashtag">🏷️ Hashtag</option>
+          <option value="user">👤 User</option>
+          <option value="keywords">🔍 Keywords</option>
+        </select>
+        <input
+          type="text"
+          class="search-bar"
+          placeholder="Search hashtags..."
+          id="searchInput"
+        />
+      </div>
+      <nav class="nav-links">
+        <a href="demo1.html" class="nav-link">Home</a>
+        <div class="login-dropdown">
+          <a href="#" class="nav-link" id="loginToggle">Login</a>
+          <div class="login-box" id="loginBox">
+            <form class="login-form" onsubmit="handleLogin(event)">
+              <div class="login-field">
+                <input
+                  type="text"
+                  id="loginUsername"
+                  placeholder="Username"
+                  required
+                />
+              </div>
+              <div class="login-field">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+              <button type="submit" class="login-submit-btn">Sign In</button>
+            </form>
+          </div>
+        </div>
+        <a href="demoRegister1.html" class="nav-link active">Register</a>
+      </nav>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-content">
+        <div class="hashtag-section">
+          <h3>Saved Hashtags</h3>
+          <div class="saved-hashtags">
+            <p class="no-hashtags">Sign up to save hashtags!</p>
+          </div>
+        </div>
+        <div class="hashtag-section">
+          <h3>Trending Hashtags</h3>
+          <div class="trending-hashtags">
+            <span class="hashtag trending">#viral</span>
+            <span class="hashtag trending">#news</span>
+            <span class="hashtag trending">#trending</span>
+            <span class="hashtag trending">#popular</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="theme-toggle-section">
+        <div class="theme-toggle">
+          <span class="theme-label">Theme</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="themeToggle" class="toggle-checkbox" />
+            <label for="themeToggle" class="toggle-label">
+              <span class="toggle-slider">
+                <span class="toggle-icon light">☀️</span>
+                <span class="toggle-icon dark">🌙</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="register-layout">
+        <div class="register-container">
+          <h1 id="formTitle">Join Crossvine</h1>
+          <p class="register-subtitle" id="formSubtitle">
+            Create your account to start sharing and saving hashtags
+          </p>
+
+          <form
+            class="register-form"
+            id="registerForm"
+            onsubmit="handleRegister(event)"
+          >
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter username (e.g., @username)"
+                required
+              />
+              <small class="form-help"
+                >This will be your unique identifier on Crossvine</small
+              >
+            </div>
+
+            <div class="form-group" id="fullnameGroup">
+              <label for="fullname">Full Name</label>
+              <input
+                type="text"
+                id="fullname"
+                name="fullname"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter a secure password"
+                required
+              />
+              <small class="form-help" id="passwordHelp"
+                >Must be at least 6 characters long</small
+              >
+            </div>
+
+            <div class="form-group" id="profileImageGroup">
+              <label for="profileImage">Profile Image</label>
+              <input
+                type="file"
+                id="profileImage"
+                name="profileImage"
+                accept="image/*"
+              />
+              <small class="form-help"
+                >Optional: Upload a profile picture (JPG, PNG, GIF)</small
+              >
+              <div class="image-preview" id="imagePreview"></div>
+            </div>
+
+            <div class="form-group" id="bioGroup">
+              <label for="bio">Bio (Optional)</label>
+              <textarea
+                id="bio"
+                name="bio"
+                placeholder="Tell us a bit about yourself..."
+                rows="3"
+              ></textarea>
+              <small class="form-help"
+                >Write a short bio to share with other users</small
+              >
+            </div>
+
+            <button type="submit" class="register-btn" id="submitBtn">
+              Create Account
+            </button>
+          </form>
+
+          <div class="login-link" id="toggleLink">
+            <p>
+              Already have an account?
+              <a href="#" onclick="toggleLoginRegister(event)">Sign in here</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="logo-display">
+          <img src="IMG/LOGO.png" alt="Crossvine Logo" class="main-logo" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

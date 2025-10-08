@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile 1</title>
+    <link rel="stylesheet" href="demo1.css" />
+    <!-- Modular JavaScript files -->
+    <script src="js/user-manager.js" defer></script>
+    <script src="js/demo-data.js" defer></script>
+    <script src="js/theme-manager.js" defer></script>
+    <script src="js/storage-manager.js" defer></script>
+    <script src="js/media-manager.js" defer></script>
+    <script src="js/posts-manager.js" defer></script>
+    <script src="js/auth-manager.js" defer></script>
+    <script src="js/ui-manager.js" defer></script>
+    <script src="js/utilities.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <a href="demo1.html" class="logo-link">
+        <div class="logo-container">
+          <img src="IMG/smaller.png" alt="Logo" class="logo" />
+          <span class="site-name">Crossvine</span>
+        </div>
+      </a>
+      <div class="search-container">
+        <select class="search-type-dropdown" id="searchType" onchange="updateSearchPlaceholder()">
+          <option value="hashtag">🏷️ Hashtag</option>
+          <option value="user">👤 User</option>
+          <option value="keywords">🔍 Keywords</option>
+        </select>
+        <input
+          type="text"
+          class="search-bar"
+          placeholder="Search hashtags..."
+          id="searchInput"
+        />
+      </div>
+      <nav class="nav-links">
+        <a href="demo1.html" class="nav-link">Home</a>
+        <a href="#" class="nav-link active" onclick="goToMyProfile()">Profile</a>
+        <a href="#" class="nav-link" onclick="logout()">Logout</a>
+      </nav>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-content">
+        <div class="hashtag-section">
+          <h3>Saved Hashtags</h3>
+          <div class="saved-hashtags">
+            <p class="no-hashtags">No saved hashtags yet. Click on trending hashtags to save them!</p>
+          </div>
+        </div>
+        <div class="hashtag-section">
+          <h3>Trending Hashtags</h3>
+          <div class="trending-hashtags">
+            <span class="hashtag trending">#viral</span>
+            <span class="hashtag trending">#news</span>
+            <span class="hashtag trending">#trending</span>
+            <span class="hashtag trending">#popular</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="theme-toggle-section">
+        <div class="theme-toggle">
+          <span class="theme-label">Theme</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="themeToggle" class="toggle-checkbox" />
+            <label for="themeToggle" class="toggle-label">
+              <span class="toggle-slider">
+                <span class="toggle-icon light">☀️</span>
+                <span class="toggle-icon dark">🌙</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="profile-container">
+        <!-- Left side: Posts -->
+        <div class="posts-area">
+          <div class="create-post-section">
+            <h3>Create New Post</h3>
+            <div class="create-post-form">
+              <textarea 
+                class="post-textarea" 
+                placeholder="What's on your mind? Use hashtags to categorize your post..."
+                maxlength="500"
+                rows="4"
+              ></textarea>
+              
+              <div class="media-upload-section">
+                <div class="media-controls">
+                  <label for="imageUpload" class="media-upload-btn image-btn">
+                    �️ Images
+                  </label>
+                  <input 
+                    type="file" 
+                    id="imageUpload" 
+                    class="media-input" 
+                    accept="image/*"
+                    multiple
+                  />
+                  
+                  <label for="videoUpload" class="media-upload-btn video-btn">
+                    🎥 Videos
+                  </label>
+                  <input 
+                    type="file" 
+                    id="videoUpload" 
+                    class="media-input" 
+                    accept="video/*"
+                    multiple
+                  />
+                  
+                  <label for="audioUpload" class="media-upload-btn audio-btn">
+                    🎵 Audio
+                  </label>
+                  <input 
+                    type="file" 
+                    id="audioUpload" 
+                    class="media-input" 
+                    accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.wma,.opus"
+                    multiple
+                  />
+                  
+                  <span class="media-info">Max 5 files total</span>
+                </div>
+                <div class="media-preview" id="mediaPreview"></div>
+              </div>
+              
+              <div class="post-actions">
+                <span class="char-counter">0/500</span>
+                <button class="submit-post-btn" type="button">Post</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="post-filters">
+            <div class="filter-section">
+              <h4>📊 Sort Posts</h4>
+              <div class="filter-group">
+                <select id="sortFilterProfile" class="filter-select">
+                  <option value="recent">🕒 Most Recent</option>
+                  <option value="oldest">⏰ Oldest First</option>
+                  <option value="most-likes">👍 Most Likes</option>
+                  <option value="least-likes">👍 Least Likes</option>
+                  <option value="most-dislikes">👎 Most Dislikes</option>
+                  <option value="least-dislikes">👎 Least Dislikes</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="filter-section">
+              <h4>🎬 Media Type</h4>
+              <div class="filter-group">
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="showImagesProfile" checked> 🖼️ Images
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="showVideosProfile" checked> 🎥 Videos
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="showAudioProfile" checked> 🎵 Audio
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="showTextProfile" checked> 📝 Text Only
+                </label>
+              </div>
+            </div>
+            
+            <div class="filter-section">
+              <button id="resetFiltersProfile" class="reset-filters-btn">🔄 Reset Filters</button>
+            </div>
+          </div>
+
+          <div class="posts-section">
+            <h3>My Posts</h3>
+          </div>
+        
+        <!-- Right side: Profile Info -->
+        <div class="profile-sidebar">
+          <h1 class="profile-username" id="profileUsername">@username</h1>
+          <h2 class="profile-displayname" id="profileDisplayName">Display Name</h2>
+          
+          <img
+            src="IMG/DemoUser.png"
+            alt="Profile Picture"
+            class="profile-picture"
+            id="profilePicture"
+          />
+          
+          <p class="profile-bio" id="profileBio">Your bio will appear here...</p>
+          
+          <div class="profile-stats">
+            <div class="stat-item">
+              <span class="stat-number" id="postCount">0</span>
+              <span class="stat-label">Posts</span>
+            </div>
+          </div>
+
+          <div class="engagement-section">
+            <h4 class="engagement-title">Post Engagement</h4>
+            <div class="ratio-bar">
+              <div class="ratio-likes" id="ratioLikes"></div>
+              <div class="ratio-dislikes" id="ratioDislikes"></div>
+            </div>
+            <div class="ratio-labels">
+              <span class="likes-label">👍 <span id="likesCount">0</span></span>
+              <span class="dislikes-label">👎 <span id="dislikesCount">0</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
