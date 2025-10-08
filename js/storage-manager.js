@@ -63,8 +63,10 @@ function clearAllStorage() {
   try {
     // Remove all Crossvine related data
     localStorage.removeItem("crossvine_users");
+    localStorage.removeItem("crossvine_current_user");
     localStorage.removeItem("crossvine_currentUser");
     localStorage.removeItem("crossvine_theme");
+    localStorage.removeItem("crossvine_viewing_profile");
 
     // Clear any other potential storage items
     const keys = Object.keys(localStorage);
@@ -82,6 +84,30 @@ function clearAllStorage() {
     return true;
   } catch (e) {
     console.error("Failed to clear storage:", e);
+    return false;
+  }
+}
+
+// Clear only user and post data (keep theme settings)
+function clearUserAndPostData() {
+  try {
+    // Remove user and post data
+    localStorage.removeItem("crossvine_users");
+    localStorage.removeItem("crossvine_current_user");
+    localStorage.removeItem("crossvine_currentUser");
+    localStorage.removeItem("crossvine_viewing_profile");
+
+    console.log("User and post data cleared successfully");
+
+    // Reset userManager instance
+    if (typeof userManager !== "undefined") {
+      userManager.users = {};
+      userManager.currentUser = null;
+    }
+
+    return true;
+  } catch (e) {
+    console.error("Failed to clear user and post data:", e);
     return false;
   }
 }

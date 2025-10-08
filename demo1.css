@@ -202,18 +202,6 @@ body {
   font-weight: bold;
 }
 
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
-  }
-}
-
 /* Sidebar styling */
 .sidebar {
   width: 250px;
@@ -2083,4 +2071,24 @@ body.dark-mode .viewing-profile-indicator {
 
 [data-theme="dark"] .search-bar::placeholder {
   color: #bdc3c7;
+}
+
+/* Clear Data Button - Bottom Right Corner */
+.clear-data-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.clear-data-btn:hover {
+  background: #c0392b;
 }

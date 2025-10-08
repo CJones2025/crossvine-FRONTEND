@@ -314,7 +314,10 @@ function initializeProfilePage() {
   if (profilePicture)
     profilePicture.src = profileUser.profileImage || "IMG/DemoUser.png";
   if (profileUsername) {
-    profileUsername.textContent = `@${profileUser.username}`;
+    const username = profileUser.username.startsWith("@")
+      ? profileUser.username
+      : `@${profileUser.username}`;
+    profileUsername.textContent = username;
   }
   if (profileDisplayName)
     profileDisplayName.textContent =

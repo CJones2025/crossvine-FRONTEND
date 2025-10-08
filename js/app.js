@@ -96,3 +96,43 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+// Clear all user and post data (for development/testing)
+function clearAllUserData() {
+  const confirmClear = confirm(
+    "This will clear ALL user accounts and posts. Are you sure you want to continue?"
+  );
+
+  if (confirmClear) {
+    try {
+      // Use the storage manager function
+      if (typeof clearUserAndPostData === "function") {
+        clearUserAndPostData();
+      } else {
+        // Fallback manual clearing
+        localStorage.removeItem("crossvine_users");
+        localStorage.removeItem("crossvine_current_user");
+        localStorage.removeItem("crossvine_currentUser");
+        localStorage.removeItem("crossvine_viewing_profile");
+        console.log("User and post data cleared (fallback method)");
+      }
+
+      alert(
+        "All user and post data has been cleared. The page will now refresh."
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error clearing data:", error);
+      alert("Error clearing data: " + error.message);
+    }
+  }
+}
+
+// Make function available globally for console access
+window.clearAllUserData = clearAllUserData;
+
+// Test function to ensure this file loads
+function testFunction() {
+  alert("App.js loaded successfully");
+}
+window.testFunction = testFunction;

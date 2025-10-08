@@ -4,16 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Main 1</title>
-    <link rel="styleshee      <div class="posts-feed">
-        <h3>Recent Posts</h3>
-        <!-- Posts will be displayed here -->
-      </div>
-    </div>
-  </body>
-</html>ss" />
+    <link rel="stylesheet" href="demo1.css" />
     <!-- Modular JavaScript files -->
     <script src="js/user-manager.js" defer></script>
-    <script src="js/demo-data.js" defer></script>
     <script src="js/theme-manager.js" defer></script>
     <script src="js/storage-manager.js" defer></script>
     <script src="js/media-manager.js" defer></script>
@@ -214,13 +207,24 @@
       </div>
     </div>
 
-    <!-- Floating Nuke Button -->
+    <!-- Clear Data Button -->
     <button
-      id="nukeBtn"
-      class="floating-nuke-btn"
-      title="Delete All Users & Posts"
+      onclick="if(confirm('Clear all user data?')){localStorage.clear();location.reload();}"
+      style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 9999;
+      "
     >
-      �
+      🗑️
     </button>
   </body>
 </html>

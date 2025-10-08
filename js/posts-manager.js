@@ -497,7 +497,9 @@ function loadSavedPosts() {
         <p><strong><a href="#" onclick="viewUserProfile('${
           postData.authorUsername
         }'); return false;" class="profile-link">${
-        postData.authorUsername
+        postData.authorUsername.startsWith("@")
+          ? postData.authorUsername
+          : "@" + postData.authorUsername
       }</a>:</strong> ${postData.content}</p>
         ${mediaHtml}
         <div class="post-actions">

@@ -121,16 +121,20 @@ function handleSearch() {
 
     if (searchMode === "hashtag") {
       // Search for hashtags in posts
-      const hashtagPattern = searchTerm.startsWith("#") ? searchTerm : `#${searchTerm}`;
+      const hashtagPattern = searchTerm.startsWith("#")
+        ? searchTerm
+        : `#${searchTerm}`;
       Object.values(allUsers).forEach((user) => {
         if (user.posts && Array.isArray(user.posts)) {
           user.posts.forEach((post) => {
-            if (post.content.toLowerCase().includes(hashtagPattern.toLowerCase())) {
+            if (
+              post.content.toLowerCase().includes(hashtagPattern.toLowerCase())
+            ) {
               matchingResults.push({
                 ...post,
                 authorName: user.fullname || user.username,
                 authorUsername: user.username,
-                type: 'post'
+                type: "post",
               });
             }
           });
@@ -138,18 +142,27 @@ function handleSearch() {
       });
     } else if (searchMode === "user") {
       // Search for users by username or display name
-      const userPattern = searchTerm.startsWith("@") ? searchTerm.substring(1) : searchTerm;
+      const userPattern = searchTerm.startsWith("@")
+        ? searchTerm.substring(1)
+        : searchTerm;
       Object.values(allUsers).forEach((user) => {
         const username = (user.username || "").toLowerCase();
-        const displayName = (user.displayName || user.fullname || "").toLowerCase();
-        
-        if (username.includes(userPattern) || displayName.includes(userPattern)) {
+        const displayName = (
+          user.displayName ||
+          user.fullname ||
+          ""
+        ).toLowerCase();
+
+        if (
+          username.includes(userPattern) ||
+          displayName.includes(userPattern)
+        ) {
           matchingResults.push({
             username: user.username,
             displayName: user.displayName || user.fullname,
-            type: 'user'
+            type: "user",
           });
-          
+
           // Also include their posts
           if (user.posts && Array.isArray(user.posts)) {
             user.posts.forEach((post) => {
@@ -157,7 +170,7 @@ function handleSearch() {
                 ...post,
                 authorName: user.fullname || user.username,
                 authorUsername: user.username,
-                type: 'post'
+                type: "post",
               });
             });
           }
@@ -173,7 +186,7 @@ function handleSearch() {
                 ...post,
                 authorName: user.fullname || user.username,
                 authorUsername: user.username,
-                type: 'post'
+                type: "post",
               });
             }
           });
@@ -183,21 +196,34 @@ function handleSearch() {
 
     // Display search results
     if (matchingResults.length > 0) {
-      const postResults = matchingResults.filter(r => r.type === 'post');
-      const userResults = matchingResults.filter(r => r.type === 'user');
-      
+      const postResults = matchingResults.filter((r) => r.type === "post");
+      const userResults = matchingResults.filter((r) => r.type === "user");
+
       let resultMessage = `Found ${matchingResults.length} result(s)`;
-      if (userResults.length > 0) resultMessage += ` (${userResults.length} user(s), ${postResults.length} post(s))`;
-      
-      console.log(`${resultMessage} for "${searchTerm}". Check the posts feed to see results highlighted.`);
+      if (userResults.length > 0)
+        resultMessage += ` (${userResults.length} user(s), ${postResults.length} post(s))`;
+
+      console.log(
+        `${resultMessage} for "${searchTerm}". Check the posts feed to see results highlighted.`
+      );
       highlightSearchResults(searchTerm);
-      
+
       // If user search, show user profiles
       if (searchMode === "user" && userResults.length > 0) {
-        console.log("Found users:", userResults.map(u => `@${u.username} (${u.displayName})`));
+        console.log(
+          "Found users:",
+          userResults.map(
+            (u) =>
+              `${u.username.startsWith("@") ? u.username : "@" + u.username} (${
+                u.displayName
+              })`
+          )
+        );
       }
     } else {
-      console.log(`No results found for "${searchTerm}" in ${searchMode} search.`);
+      console.log(
+        `No results found for "${searchTerm}" in ${searchMode} search.`
+      );
     }
   }
 }
@@ -227,21 +253,21 @@ function highlightSearchResults(searchTerm) {
 function updateSearchPlaceholder() {
   const searchType = document.getElementById("searchType");
   const searchBar = document.querySelector(".search-bar");
-  
+
   if (searchType && searchBar) {
     const placeholders = {
       hashtag: "Search hashtags...",
-      user: "Search users...", 
-      keywords: "Search keywords..."
+      user: "Search users...",
+      keywords: "Search keywords...",
     };
-    
+
     const selectedType = searchType.value;
     const newPlaceholder = placeholders[selectedType] || "Search...";
-    
+
     // Update the placeholder text
     searchBar.placeholder = newPlaceholder;
-    searchBar.setAttribute('placeholder', newPlaceholder);
-    
+    searchBar.setAttribute("placeholder", newPlaceholder);
+
     console.log(`Search placeholder updated to: "${newPlaceholder}"`);
   }
 }
@@ -250,29 +276,29 @@ function updateSearchPlaceholder() {
 function initializeSearchFunctionality() {
   const searchBar = document.querySelector(".search-bar");
   const searchType = document.getElementById("searchType");
-  
-  console.log('Initializing search functionality...', { 
-    searchBar: !!searchBar, 
-    searchType: !!searchType 
+
+  console.log("Initializing search functionality...", {
+    searchBar: !!searchBar,
+    searchType: !!searchType,
   });
-  
+
   if (searchBar) {
     // Remove any existing listeners to avoid duplicates
     searchBar.removeEventListener("keypress", handleSearchKeypress);
     searchBar.addEventListener("keypress", handleSearchKeypress);
   }
-  
+
   if (searchType) {
     // Set initial placeholder
     updateSearchPlaceholder();
-    
+
     // Remove any existing listeners to avoid duplicates
     searchType.removeEventListener("change", handleSearchTypeChange);
     searchType.addEventListener("change", handleSearchTypeChange);
-    
-    console.log('Search functionality initialized successfully');
+
+    console.log("Search functionality initialized successfully");
   } else {
-    console.log('Search type dropdown not found, retrying in 100ms...');
+    console.log("Search type dropdown not found, retrying in 100ms...");
     setTimeout(initializeSearchFunctionality, 100);
   }
 }
@@ -285,7 +311,7 @@ function handleSearchKeypress(e) {
 }
 
 function handleSearchTypeChange(e) {
-  console.log('Search type changed to:', e.target.value);
+  console.log("Search type changed to:", e.target.value);
   updateSearchPlaceholder();
 }
 
@@ -294,23 +320,9 @@ window.updateSearchPlaceholder = updateSearchPlaceholder;
 
 // Initialize search functionality when DOM loads
 document.addEventListener("DOMContentLoaded", () => {
-  // Add hashtag click functionality to existing posts
-  addHashtagClickListeners();
-
   // Initialize search functionality
   initializeSearchFunctionality();
 });
-
-// Backup initialization in case DOMContentLoaded already fired
-if (document.readyState === 'loading') {
-  // DOM is still loading, DOMContentLoaded will fire
-} else {
-  // DOM is already loaded, initialize immediately
-  setTimeout(() => {
-    addHashtagClickListeners();
-    initializeSearchFunctionality();
-  }, 0);
-}
 
 // Function to update engagement ratio display
 function updateEngagementRatio(user) {
