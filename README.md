@@ -34,7 +34,6 @@ A modern, interactive social media platform frontend built with vanilla HTML, CS
 - **Storage System**: Local data persistence with compression
 - **Search & Filter**: Advanced post filtering by media type, date, and engagement
 - **Modular Architecture**: Clean, maintainable JavaScript modules
-- **💥 Nuke Feature**: Admin-level content management (delete all posts/users)
 
 ## 📁 Project Structure
 
@@ -119,7 +118,6 @@ crossvine-FRONTEND/
 - **Theme Toggle**: Switch between light/dark modes in the sidebar
 - **Search**: Use the top search bar to find users, hashtags, or keywords
 - **Filters**: Sort and filter posts by various criteria
-- **💥 Nuke Button**: Admin feature to clear all content (bottom-right corner)
 
 ## 🏗️ Architecture
 
