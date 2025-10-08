@@ -106,23 +106,25 @@ document.addEventListener("DOMContentLoaded", function () {
 // Nuke All Users and Posts functionality
 function handleNuke() {
   const nukeBtn = document.getElementById("nukeBtn");
-  
+
   // Show confirmation dialog
-  const confirmed = confirm("⚠️ WARNING: This will permanently delete ALL users and posts!\n\nAre you sure you want to proceed?");
-  
+  const confirmed = confirm(
+    "⚠️ WARNING: This will permanently delete ALL users and posts!\n\nAre you sure you want to proceed?"
+  );
+
   if (confirmed) {
     // Add nuking animation
     nukeBtn.classList.add("nuking");
     nukeBtn.textContent = "💀";
     nukeBtn.title = "Nuking in progress...";
-    
+
     // Show nuke feedback
     showNukeFeedback();
-    
+
     // Start the nuke sequence
     setTimeout(() => {
       executeNuke();
-      
+
       // Reset button after nuke is complete
       setTimeout(() => {
         nukeBtn.classList.remove("nuking");
@@ -136,11 +138,11 @@ function handleNuke() {
 
 function executeNuke() {
   let deletedCount = 0;
-  
+
   // Nuke all posts from the DOM
-  const posts = document.querySelectorAll('.post');
-  posts.forEach(post => {
-    post.style.animation = 'nukeDisappear 0.5s ease-out forwards';
+  const posts = document.querySelectorAll(".post");
+  posts.forEach((post) => {
+    post.style.animation = "nukeDisappear 0.5s ease-out forwards";
     setTimeout(() => {
       if (post.parentNode) {
         post.parentNode.removeChild(post);
@@ -148,51 +150,53 @@ function executeNuke() {
     }, 500);
     deletedCount++;
   });
-  
+
   // Nuke all user-related elements
-  const userElements = document.querySelectorAll('.username, .user-link, .profile-link');
-  userElements.forEach(element => {
-    element.style.animation = 'nukeDisappear 0.5s ease-out forwards';
+  const userElements = document.querySelectorAll(
+    ".username, .user-link, .profile-link"
+  );
+  userElements.forEach((element) => {
+    element.style.animation = "nukeDisappear 0.5s ease-out forwards";
     setTimeout(() => {
-      element.textContent = '[DELETED]';
-      element.style.color = '#e74c3c';
-      element.style.textDecoration = 'line-through';
+      element.textContent = "[DELETED]";
+      element.style.color = "#e74c3c";
+      element.style.textDecoration = "line-through";
     }, 250);
     deletedCount++;
   });
-  
+
   // Clear all stored data (if using storage manager)
   try {
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       // Clear posts from localStorage
-      localStorage.removeItem('savedPosts');
-      localStorage.removeItem('users');
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem("savedPosts");
+      localStorage.removeItem("users");
+      localStorage.removeItem("currentUser");
     }
   } catch (error) {
-    console.log('Storage clearing not available:', error);
+    console.log("Storage clearing not available:", error);
   }
-  
+
   // Clear demo data if available
   try {
-    if (typeof window.demoUsers !== 'undefined') {
+    if (typeof window.demoUsers !== "undefined") {
       window.demoUsers = [];
     }
-    if (typeof window.demoPosts !== 'undefined') {
+    if (typeof window.demoPosts !== "undefined") {
       window.demoPosts = [];
     }
   } catch (error) {
-    console.log('Demo data clearing not available:', error);
+    console.log("Demo data clearing not available:", error);
   }
-  
+
   return deletedCount;
 }
 
 function showNukeFeedback() {
   // Create nuke feedback overlay
-  const overlay = document.createElement('div');
-  overlay.id = 'nukeOverlay';
-  overlay.className = 'nuke-overlay';
+  const overlay = document.createElement("div");
+  overlay.id = "nukeOverlay";
+  overlay.className = "nuke-overlay";
   overlay.innerHTML = `
     <div class="nuke-message">
       <h2>🚨 INITIATING NUKE SEQUENCE 🚨</h2>
@@ -201,7 +205,7 @@ function showNukeFeedback() {
     </div>
   `;
   document.body.appendChild(overlay);
-  
+
   // Remove overlay after animation
   setTimeout(() => {
     if (overlay.parentNode) {
@@ -212,9 +216,9 @@ function showNukeFeedback() {
 
 function showNukeComplete() {
   // Create completion message
-  const message = document.createElement('div');
-  message.id = 'nukeComplete';
-  message.className = 'nuke-complete';
+  const message = document.createElement("div");
+  message.id = "nukeComplete";
+  message.className = "nuke-complete";
   message.innerHTML = `
     <div class="completion-message">
       <h3>💀 NUKE COMPLETE 💀</h3>
@@ -222,7 +226,7 @@ function showNukeComplete() {
     </div>
   `;
   document.body.appendChild(message);
-  
+
   // Remove message after 3 seconds
   setTimeout(() => {
     if (message.parentNode) {
