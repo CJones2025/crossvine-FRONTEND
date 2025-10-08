@@ -21,7 +21,7 @@ function updateCharacterCount(textarea) {
 }
 
 // Create post function
-function createPost(textareaElement, previewElement) {
+function createPost(textareaElement) {
   if (!textareaElement) {
     alert("Textarea element not found!");
     return;
@@ -58,17 +58,9 @@ function createPost(textareaElement, previewElement) {
   // Generate unique ID for the post
   const postId = Date.now();
 
-  // Get media data before clearing preview
-  const mediaData = getMediaData(previewElement);
-
   // Clear the form
   textareaElement.value = "";
   updateCharacterCount(textareaElement);
-
-  // Clear media preview if it exists
-  if (previewElement) {
-    previewElement.innerHTML = "";
-  }
 
   // Save post to user data and let loadSavedPosts() handle display
   if (currentUser) {
@@ -76,7 +68,6 @@ function createPost(textareaElement, previewElement) {
 
     const newPost = {
       content: postContent,
-      media: mediaData || [],
       timestamp: new Date().toISOString(),
       id: postId,
       authorId: currentUser.username,
@@ -131,11 +122,6 @@ function createPost(textareaElement, previewElement) {
       // Clear the textarea
       textareaElement.value = "";
 
-      // Clear preview if it exists
-      if (previewElement) {
-        previewElement.innerHTML = "";
-      }
-
       // Refresh the posts display to show the new post from saved data
       loadSavedPosts();
       console.log("Posts reloaded - textarea cleared");
@@ -176,9 +162,6 @@ function createPost(textareaElement, previewElement) {
 
         // Clear form
         textareaElement.value = "";
-        if (previewElement) {
-          previewElement.innerHTML = "";
-        }
 
         // Reload posts
         loadSavedPosts();
@@ -404,75 +387,8 @@ function loadSavedPosts() {
 
       const timeAgo = getTimeAgo(new Date(postData.timestamp));
 
-      let mediaHtml = "";
-      let hasImages = false;
-      let hasVideos = false;
-      let hasAudio = false;
-
-      if (postData.media && postData.media.length > 0) {
-        mediaHtml = '<div class="post-media">';
-
-        // Separate media by type for better filter detection
-        const images = postData.media.filter((m) =>
-          m.type.startsWith("image/")
-        );
-        const videos = postData.media.filter((m) =>
-          m.type.startsWith("video/")
-        );
-        const audios = postData.media.filter((m) =>
-          m.type.startsWith("audio/")
-        );
-
-        // Images container
-        if (images.length > 0) {
-          hasImages = true;
-          mediaHtml += '<div class="post-images">';
-          images.forEach((media) => {
-            mediaHtml += `<img src="${media.data}" alt="${media.name}" class="post-image">`;
-          });
-          mediaHtml += "</div>";
-        }
-
-        // Videos container
-        if (videos.length > 0) {
-          hasVideos = true;
-          mediaHtml += '<div class="post-videos">';
-          videos.forEach((media) => {
-            mediaHtml += `
-            <div class="media-with-title">
-              <div class="media-player-wrapper">
-                <video src="${media.data}" controls class="post-video"></video>
-              </div>
-              <div class="media-title">🎥 ${media.name}</div>
-            </div>`;
-          });
-          mediaHtml += "</div>";
-        }
-
-        // Audio container
-        if (audios.length > 0) {
-          hasAudio = true;
-          mediaHtml += '<div class="post-audio">';
-          audios.forEach((media) => {
-            mediaHtml += `
-            <div class="media-with-title">
-              <div class="media-player-wrapper">
-                <audio src="${media.data}" controls class="post-audio-player"></audio>
-              </div>
-              <div class="media-title">🎵 ${media.name}</div>
-            </div>`;
-          });
-          mediaHtml += "</div>";
-        }
-
-        mediaHtml += "</div>";
-      }
-
-      // Add media type data attributes
-      newPost.dataset.hasImages = hasImages;
-      newPost.dataset.hasVideos = hasVideos;
-      newPost.dataset.hasAudio = hasAudio;
-      newPost.dataset.isTextOnly = !hasImages && !hasVideos && !hasAudio;
+      // Text-only posts
+      newPost.dataset.isTextOnly = true;
 
       const likes = postData.likes || 0;
       const dislikes = postData.dislikes || 0;
@@ -501,7 +417,6 @@ function loadSavedPosts() {
           ? postData.authorUsername
           : "@" + postData.authorUsername
       }</a>:</strong> ${postData.content}</p>
-        ${mediaHtml}
         <div class="post-actions">
           <div class="vote-buttons">
             <button class="like-btn ${
@@ -564,7 +479,14 @@ function getTimeAgo(date) {
 
 // Delete saved post function
 function deleteSavedPost(element, postId) {
-  const post = element.parentElement;
+  // Find the actual post element (it has class 'post' and 'saved-post')
+  const post = element.closest(".post.saved-post");
+
+  if (!post) {
+    console.error("Could not find post element to delete");
+    return;
+  }
+
   post.style.opacity = "0";
 
   setTimeout(() => {
@@ -576,10 +498,25 @@ function deleteSavedPost(element, postId) {
       if (currentUser.posts) {
         // Convert postId to number for comparison
         const numericPostId = parseInt(postId);
+
+        // Filter out the deleted post
         currentUser.posts = currentUser.posts.filter(
           (p) => p.id !== numericPostId
         );
+
+        // Update the user in localStorage directly
+        let allUsers = JSON.parse(
+          localStorage.getItem("crossvine_users") || "{}"
+        );
+        if (allUsers[currentUser.username]) {
+          allUsers[currentUser.username].posts = currentUser.posts;
+          localStorage.setItem("crossvine_users", JSON.stringify(allUsers));
+        }
+
+        // Also update through userManager for consistency
         userManager.updateUser({ posts: currentUser.posts });
+
+        console.log(`Post ${numericPostId} deleted successfully`);
       }
     }
   }, 300);
@@ -1144,9 +1081,6 @@ function isViewingOwnProfile() {
 // Current filter state
 let currentFilters = {
   sort: "recent",
-  showImages: true,
-  showVideos: true,
-  showAudio: true,
   showText: true,
 };
 
@@ -1154,9 +1088,6 @@ let currentFilters = {
 function initializePostFilters() {
   const isProfilePage = window.location.pathname.includes("demoProfile1.html");
   const sortSelector = isProfilePage ? "#sortFilterProfile" : "#sortFilter";
-  const imageSelector = isProfilePage ? "#showImagesProfile" : "#showImages";
-  const videoSelector = isProfilePage ? "#showVideosProfile" : "#showVideos";
-  const audioSelector = isProfilePage ? "#showAudioProfile" : "#showAudio";
   const textSelector = isProfilePage ? "#showTextProfile" : "#showText";
   const resetSelector = isProfilePage
     ? "#resetFiltersProfile"
@@ -1171,33 +1102,8 @@ function initializePostFilters() {
     });
   }
 
-  // Media type filters
-  const imageFilter = document.querySelector(imageSelector);
-  const videoFilter = document.querySelector(videoSelector);
-  const audioFilter = document.querySelector(audioSelector);
+  // Text filter
   const textFilter = document.querySelector(textSelector);
-
-  if (imageFilter) {
-    imageFilter.addEventListener("change", function () {
-      currentFilters.showImages = this.checked;
-      applyFilters();
-    });
-  }
-
-  if (videoFilter) {
-    videoFilter.addEventListener("change", function () {
-      currentFilters.showVideos = this.checked;
-      applyFilters();
-    });
-  }
-
-  if (audioFilter) {
-    audioFilter.addEventListener("change", function () {
-      currentFilters.showAudio = this.checked;
-      applyFilters();
-    });
-  }
-
   if (textFilter) {
     textFilter.addEventListener("change", function () {
       currentFilters.showText = this.checked;
@@ -1247,11 +1153,8 @@ function applyFilters() {
     };
   });
 
-  // Filter posts by media type
+  // Filter posts by content type (all posts are text-only now)
   const filteredPosts = postsData.filter((post) => {
-    if (!currentFilters.showImages && post.hasImages) return false;
-    if (!currentFilters.showVideos && post.hasVideos) return false;
-    if (!currentFilters.showAudio && post.hasAudio) return false;
     if (!currentFilters.showText && post.isTextOnly) return false;
     return true;
   });
@@ -1301,30 +1204,18 @@ function applyFilters() {
 function resetFilters() {
   currentFilters = {
     sort: "recent",
-    showImages: true,
-    showVideos: true,
-    showAudio: true,
     showText: true,
   };
 
   // Reset UI elements
   const isProfilePage = window.location.pathname.includes("demoProfile1.html");
   const sortSelector = isProfilePage ? "#sortFilterProfile" : "#sortFilter";
-  const imageSelector = isProfilePage ? "#showImagesProfile" : "#showImages";
-  const videoSelector = isProfilePage ? "#showVideosProfile" : "#showVideos";
-  const audioSelector = isProfilePage ? "#showAudioProfile" : "#showAudio";
   const textSelector = isProfilePage ? "#showTextProfile" : "#showText";
 
   const sortFilter = document.querySelector(sortSelector);
-  const imageFilter = document.querySelector(imageSelector);
-  const videoFilter = document.querySelector(videoSelector);
-  const audioFilter = document.querySelector(audioSelector);
   const textFilter = document.querySelector(textSelector);
 
   if (sortFilter) sortFilter.value = "recent";
-  if (imageFilter) imageFilter.checked = true;
-  if (videoFilter) videoFilter.checked = true;
-  if (audioFilter) audioFilter.checked = true;
   if (textFilter) textFilter.checked = true;
 
   applyFilters();

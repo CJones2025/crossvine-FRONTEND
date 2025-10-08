@@ -9,7 +9,6 @@
     <script src="js/user-manager.js" defer></script>
     <script src="js/theme-manager.js" defer></script>
     <script src="js/storage-manager.js" defer></script>
-    <script src="js/media-manager.js" defer></script>
     <script src="js/posts-manager.js" defer></script>
     <script src="js/auth-manager.js" defer></script>
     <script src="js/ui-manager.js" defer></script>
@@ -114,46 +113,6 @@
             rows="4"
           ></textarea>
 
-          <div class="media-upload-section">
-            <div class="media-controls">
-              <label for="imageUploadMain" class="media-upload-btn image-btn">
-                🖼️ Images
-              </label>
-              <input
-                type="file"
-                id="imageUploadMain"
-                class="media-input"
-                accept="image/*"
-                multiple
-              />
-
-              <label for="videoUploadMain" class="media-upload-btn video-btn">
-                🎥 Videos
-              </label>
-              <input
-                type="file"
-                id="videoUploadMain"
-                class="media-input"
-                accept="video/*"
-                multiple
-              />
-
-              <label for="audioUploadMain" class="media-upload-btn audio-btn">
-                🎵 Audio
-              </label>
-              <input
-                type="file"
-                id="audioUploadMain"
-                class="media-input"
-                accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.wma,.opus"
-                multiple
-              />
-
-              <span class="media-info">Max 5 files total</span>
-            </div>
-            <div class="media-preview" id="mediaPreviewMain"></div>
-          </div>
-
           <div class="post-actions">
             <span class="char-counter">0/500</span>
             <button class="submit-post-btn" type="button">Post</button>
@@ -177,19 +136,10 @@
         </div>
 
         <div class="filter-section">
-          <h4>🎬 Media Type</h4>
+          <h4>📝 Content Type</h4>
           <div class="filter-group">
             <label class="filter-checkbox">
-              <input type="checkbox" id="showImages" checked /> 🖼️ Images
-            </label>
-            <label class="filter-checkbox">
-              <input type="checkbox" id="showVideos" checked /> 🎥 Videos
-            </label>
-            <label class="filter-checkbox">
-              <input type="checkbox" id="showAudio" checked /> 🎵 Audio
-            </label>
-            <label class="filter-checkbox">
-              <input type="checkbox" id="showText" checked /> 📝 Text Only
+              <input type="checkbox" id="showText" checked /> 📝 Text Posts
             </label>
           </div>
         </div>

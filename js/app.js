@@ -33,8 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.error("Error loading saved posts:", error);
   }
 
-  // Default audio players - no custom initialization needed
-
   // Add remove functionality to saved hashtags
   const removeButtons = document.querySelectorAll(".remove-tag");
   removeButtons.forEach((button) => {

@@ -130,33 +130,6 @@ function initializeCreatePostForm() {
   const textareas = document.querySelectorAll(".post-textarea");
   const submitButtons = document.querySelectorAll(".submit-post-btn");
 
-  // Set up media upload event listeners
-  const imageInputs = document.querySelectorAll(
-    "#imageUpload, #imageUploadMain"
-  );
-  const videoInputs = document.querySelectorAll(
-    "#videoUpload, #videoUploadMain"
-  );
-  const audioInputs = document.querySelectorAll(
-    "#audioUpload, #audioUploadMain"
-  );
-
-  [...imageInputs, ...videoInputs, ...audioInputs].forEach((input) => {
-    if (input.dataset.initialized === "true") return;
-    input.dataset.initialized = "true";
-
-    input.addEventListener("change", function () {
-      const form = this.closest(".create-post-form");
-      const previewContainer = form
-        ? form.querySelector(".media-preview")
-        : null;
-
-      if (previewContainer && this.files.length > 0) {
-        handleMediaUpload(this, previewContainer);
-      }
-    });
-  });
-
   textareas.forEach((textarea, index) => {
     // Skip if already initialized
     if (textarea.dataset.initialized === "true") {
@@ -204,10 +177,8 @@ function initializeCreatePostForm() {
         textarea = document.querySelector(".post-textarea");
       }
 
-      const mediaPreview = form ? form.querySelector(".media-preview") : null;
-
       if (textarea) {
-        createPost(textarea, mediaPreview);
+        createPost(textarea);
       } else {
         alert("Could not find textarea in form!");
       }
