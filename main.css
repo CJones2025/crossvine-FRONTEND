@@ -572,12 +572,6 @@ body {
   color: #95a5a6;
 }
 
-.post-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .char-counter {
   color: #7f8c8d;
   font-size: 12px;
@@ -775,86 +769,12 @@ body {
   gap: 10px;
 }
 
-.post-image,
-.post-video {
+.post-image {
   max-width: 100%;
   max-height: 300px;
   border-radius: 8px;
   border: 1px solid #ddd;
-}
-
-.post-image {
   object-fit: cover;
-}
-
-/* Simplified Video Player Styling */
-.post-video {
-  width: 100%;
-  border-radius: 8px;
-  border: 2px solid #27ae60;
-  outline: none;
-  transition: border-color 0.3s ease;
-  background: #000;
-}
-
-.post-video:hover {
-  border-color: #2ecc71;
-}
-
-/* Simple Video Controls */
-.post-video::-webkit-media-controls-panel {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.post-video::-webkit-media-controls-play-button {
-  opacity: 1;
-}
-
-/* Much Larger Audio Player */
-.post-audio {
-  width: 100%;
-  min-width: 500px;
-  height: 100px;
-  margin: 20px 0;
-  background: #f8f9fa;
-  border: 3px solid #ddd;
-  border-radius: 12px;
-  padding: 15px;
-  box-sizing: border-box;
-}
-
-/* Dark theme for audio player */
-[data-theme="dark"] .post-audio {
-  background: #2c3e50;
-  border-color: #555;
-}
-
-/* Old webkit controls removed - using custom audio player */
-
-.post-audio::-webkit-media-controls-volume-slider {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  height: 6px;
-}
-
-.post-audio::-webkit-media-controls-volume-slider::-webkit-slider-thumb {
-  background: white;
-  border-radius: 50%;
-  width: 14px;
-  height: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.post-audio::-webkit-media-controls-mute-button {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  margin: 0 5px;
-}
-
-.post-audio::-webkit-media-controls-mute-button:hover {
-  background: white;
 }
 
 /* Media with custom titles */
@@ -967,13 +887,13 @@ body {
 }
 
 .like-btn.liked {
-  background: #e3f2fd;
+  background: #88cdff;
   border-color: #2196f3;
   color: #1976d2;
 }
 
 .dislike-btn.disliked {
-  background: #fce4ec;
+  background: #ff92b7;
   border-color: #e91e63;
   color: #c2185b;
 }
@@ -1395,7 +1315,7 @@ body {
 }
 
 [data-theme="dark"] .reset-filters-btn {
-  background: #e67e22 !important;
+  background: #ff0000 !important;
 }
 
 [data-theme="dark"] .reset-filters-btn:hover {
@@ -1482,8 +1402,8 @@ body {
 
 [data-theme="dark"] .media-title {
   background: rgba(44, 62, 80, 0.8) !important;
-  color: #4caf50 !important;
-  border-left-color: #4caf50 !important;
+  color: #27ae60 !important;
+  border-left-color: #27ae60 !important;
 }
 
 [data-theme="dark"] .custom-name-input {
@@ -1654,79 +1574,12 @@ body {
   color: #ffb74d !important;
 }
 
-/* Simple Media Player Styling */
-
-/* Simplified Media Player Focus States */
-.post-video:focus,
-.post-audio:focus {
-  border-color: #2ecc71;
-  outline: none;
-}
-
-/* Volume Slider Enhanced Styling */
-.post-audio::-webkit-media-controls-volume-slider::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 5px;
-  height: 6px;
-}
-
-.post-video::-webkit-media-controls-volume-slider::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 5px;
-  height: 6px;
-}
-
-/* Timeline Progress Styling */
-.post-audio::-webkit-media-controls-timeline::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  height: 8px;
-}
-
-.post-video::-webkit-media-controls-timeline::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 6px;
-  height: 6px;
-}
-
 /* Simplified Media Container */
 .media-player-wrapper {
   position: relative;
   display: block;
   width: 100%;
   margin: 5px 0;
-}
-
-/* Dark Theme Media Player Enhancements */
-[data-theme="dark"] .post-video {
-  border-color: #4caf50 !important;
-}
-
-[data-theme="dark"] .post-video:focus,
-[data-theme="dark"] .post-audio:focus {
-  border-color: #66bb6a !important;
-}
-
-[data-theme="dark"] .post-video:hover {
-  box-shadow: 0 12px 30px rgba(76, 175, 80, 0.4) !important;
-  border-color: #66bb6a !important;
-}
-
-[data-theme="dark"] .post-video::-webkit-media-controls-panel {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-[data-theme="dark"] .post-video::-webkit-media-controls-play-button {
-  opacity: 1;
-}
-
-[data-theme="dark"] .post-audio {
-  background: linear-gradient(135deg, #4caf50, #66bb6a) !important;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3) !important;
-}
-
-[data-theme="dark"] .post-audio:hover {
-  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5) !important;
 }
 
 [data-theme="dark"] .media-with-title {
