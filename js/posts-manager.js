@@ -138,9 +138,9 @@ function addSinglePostToDOM(newPost, user) {
             👎 <span class="dislike-count">0</span>
           </button>
         </div>
-        <small>${timeAgo}</small>
-        ${deleteButton}
       </div>
+      ${deleteButton}
+      <small>${timeAgo}</small>
     </div>
   `;
 
@@ -399,9 +399,9 @@ function loadSavedPosts() {
               👎 <span class="dislike-count">${dislikes}</span>
             </button>
           </div>
-          <small>${timeAgo}</small>
-          ${deleteButton}
         </div>
+        ${deleteButton}
+        <small>${timeAgo}</small>
       </div>
     `;
 
