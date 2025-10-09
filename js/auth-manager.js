@@ -18,7 +18,7 @@ function handleLogin(event) {
 
     // Redirect to profile page
     updateNavigation();
-    window.location.href = "demoProfile1.html";
+    window.location.href = "profile.html";
   } catch (error) {
     alert(error.message);
   }
@@ -77,7 +77,7 @@ async function handleRegister(event) {
     // Registration successful - redirect to profile
     // Update navigation and redirect to profile
     updateNavigation();
-    window.location.href = "demoProfile1.html";
+    window.location.href = "profile.html";
   } catch (error) {
     alert(error.message);
   }
@@ -192,7 +192,7 @@ function handleLoginFromRegisterPage(event) {
 
     // Update navigation and redirect to profile
     updateNavigation();
-    window.location.href = "demoProfile1.html";
+    window.location.href = "profile.html";
   } catch (error) {
     alert(error.message);
   }

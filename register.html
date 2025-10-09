@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Main 1</title>
-    <link rel="stylesheet" href="demo1.css" />
+    <title>Crossvine - Register</title>
+    <link rel="stylesheet" href="main.css" />
     <!-- Modular JavaScript files -->
     <script src="js/user-manager.js" defer></script>
     <script src="js/theme-manager.js" defer></script>
@@ -17,7 +17,7 @@
   </head>
   <body>
     <div class="topbar">
-      <a href="demo1.html" class="logo-link">
+      <a href="index.html" class="logo-link">
         <div class="logo-container">
           <img src="IMG/smaller.png" alt="Logo" class="logo" />
           <span class="site-name">Crossvine</span>
@@ -41,6 +41,7 @@
         />
       </div>
       <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
         <div class="login-dropdown">
           <a href="#" class="nav-link" id="loginToggle">Login</a>
           <div class="login-box" id="loginBox">
@@ -65,7 +66,7 @@
             </form>
           </div>
         </div>
-        <a href="demoRegister1.html" class="nav-link">Register</a>
+        <a href="register.html" class="nav-link active">Register</a>
       </nav>
     </div>
     <div class="sidebar">
@@ -103,78 +104,101 @@
       </div>
     </div>
     <div class="main-content">
-      <div class="create-post-section">
-        <h3>Create New Post</h3>
-        <div class="create-post-form">
-          <textarea
-            class="post-textarea"
-            placeholder="What's on your mind? Use hashtags to categorize your post..."
-            maxlength="500"
-            rows="4"
-          ></textarea>
+      <div class="register-layout">
+        <div class="register-container">
+          <h1 id="formTitle">Join Crossvine</h1>
+          <p class="register-subtitle" id="formSubtitle">
+            Create your account to start sharing and saving hashtags
+          </p>
 
-          <div class="post-actions">
-            <span class="char-counter">0/500</span>
-            <button class="submit-post-btn" type="button">Post</button>
+          <form
+            class="register-form"
+            id="registerForm"
+            onsubmit="handleRegister(event)"
+          >
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter username (e.g., @username)"
+                required
+              />
+              <small class="form-help"
+                >This will be your unique identifier on Crossvine</small
+              >
+            </div>
+
+            <div class="form-group" id="fullnameGroup">
+              <label for="fullname">Full Name</label>
+              <input
+                type="text"
+                id="fullname"
+                name="fullname"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter a secure password"
+                required
+              />
+              <small class="form-help" id="passwordHelp"
+                >Must be at least 6 characters long</small
+              >
+            </div>
+
+            <div class="form-group" id="profileImageGroup">
+              <label for="profileImage">Profile Image</label>
+              <input
+                type="file"
+                id="profileImage"
+                name="profileImage"
+                accept="image/*"
+              />
+              <small class="form-help"
+                >Optional: Upload a profile picture (JPG, PNG, GIF)</small
+              >
+              <div class="image-preview" id="imagePreview"></div>
+            </div>
+
+            <div class="form-group" id="bioGroup">
+              <label for="bio">Bio (Optional)</label>
+              <textarea
+                id="bio"
+                name="bio"
+                placeholder="Tell us a bit about yourself..."
+                rows="3"
+              ></textarea>
+              <small class="form-help"
+                >Write a short bio to share with other users</small
+              >
+            </div>
+
+            <button type="submit" class="register-btn" id="submitBtn">
+              Create Account
+            </button>
+          </form>
+
+          <div class="login-link" id="toggleLink">
+            <p>
+              Already have an account?
+              <a href="#" onclick="toggleLoginRegister(event)">Sign in here</a>
+            </p>
           </div>
         </div>
-      </div>
 
-      <div class="post-filters">
-        <div class="filter-section">
-          <h4>📊 Sort Posts</h4>
-          <div class="filter-group">
-            <select id="sortFilter" class="filter-select">
-              <option value="recent">🕒 Most Recent</option>
-              <option value="oldest">⏰ Oldest First</option>
-              <option value="most-likes">👍 Most Likes</option>
-              <option value="least-likes">👍 Least Likes</option>
-              <option value="most-dislikes">👎 Most Dislikes</option>
-              <option value="least-dislikes">👎 Least Dislikes</option>
-            </select>
-          </div>
+        <div class="logo-display">
+          <img src="IMG/LOGO.png" alt="Crossvine Logo" class="main-logo" />
         </div>
-
-        <div class="filter-section">
-          <h4>📝 Content Type</h4>
-          <div class="filter-group">
-            <label class="filter-checkbox">
-              <input type="checkbox" id="showText" checked /> 📝 Text Posts
-            </label>
-          </div>
-        </div>
-
-        <div class="filter-section">
-          <button id="resetFilters" class="reset-filters-btn">
-            🔄 Reset Filters
-          </button>
-        </div>
-      </div>
-
-      <div class="posts-feed">
-        <h3>Recent Posts</h3>
-        <!-- Posts will be displayed here -->
       </div>
     </div>
-
-    <!-- Clear Data Button -->
-    <button
-      onclick="if(confirm('Clear all user data?')){localStorage.clear();location.reload();}"
-      style="
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 40px;
-        height: 40px;
-        background: red;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 9999;
-      "
-    >
-      🗑️
-    </button>
   </body>
 </html>

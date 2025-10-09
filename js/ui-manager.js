@@ -9,14 +9,14 @@ function updateNavigation() {
     const user = userManager.getCurrentUser();
     // Logged in navigation
     navLinks.innerHTML = `
-      <a href="demo1.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link">Home</a>
       <a href="#" class="nav-link" onclick="goToMyProfile()">Profile</a>
       <a href="#" class="nav-link" onclick="logout()">Logout</a>
     `;
   } else {
     // Not logged in navigation
     const isHomePage =
-      window.location.pathname.includes("demo1.html") ||
+      window.location.pathname.includes("index.html") ||
       window.location.pathname === "/" ||
       window.location.pathname.endsWith("/");
 
@@ -36,11 +36,11 @@ function updateNavigation() {
             </form>
           </div>
         </div>
-        <a href="demoRegister1.html" class="nav-link">Register</a>
+        <a href="register.html" class="nav-link">Register</a>
       `;
     } else {
       navLinks.innerHTML = `
-        <a href="demo1.html" class="nav-link">Home</a>
+        <a href="index.html" class="nav-link">Home</a>
         <div class="login-dropdown">
           <a href="#" class="nav-link" id="loginToggle">Login</a>
           <div class="login-box" id="loginBox">
@@ -55,7 +55,7 @@ function updateNavigation() {
             </form>
           </div>
         </div>
-        <a href="demoRegister1.html" class="nav-link">Register</a>
+        <a href="register.html" class="nav-link">Register</a>
       `;
     }
   }
@@ -122,7 +122,7 @@ function initializeLoginDropdown() {
 function logout() {
   userManager.logout();
   updateNavigation();
-  window.location.href = "demo1.html";
+  window.location.href = "index.html";
 }
 
 // Initialize create post form functionality
@@ -230,7 +230,7 @@ function updateCreatePostVisibility() {
 
   // Check if we're on the home page
   const isHomePage =
-    window.location.pathname.includes("demo1.html") ||
+    window.location.pathname.includes("index.html") ||
     window.location.pathname === "/" ||
     window.location.pathname.endsWith("/");
 
@@ -248,14 +248,14 @@ function updateCreatePostVisibility() {
 // Initialize profile page with user data
 function initializeProfilePage() {
   // Check if we're on the profile page
-  if (!window.location.pathname.includes("demoProfile1.html")) {
+  if (!window.location.pathname.includes("profile.html")) {
     return;
   }
 
   const currentUser = userManager.getCurrentUser();
   if (!currentUser) {
     // Redirect to home if not logged in
-    window.location.href = "demo1.html";
+    window.location.href = "index.html";
     return;
   }
 

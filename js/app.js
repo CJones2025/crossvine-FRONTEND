@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Update engagement ratio if on profile page
-  if (window.location.pathname.includes("demoProfile1.html")) {
+  if (window.location.pathname.includes("profile.html")) {
     const currentUser = userManager.getCurrentUser();
     if (currentUser) {
       // Check if viewing another user's profile

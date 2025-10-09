@@ -20,7 +20,7 @@ function updateCharacterCount(textarea) {
   }
 }
 
-// Create post function
+// Create post function - SIMPLE VERSION THAT DOESN'T INTERFERE WITH EXISTING POSTS
 function createPost(textareaElement) {
   if (!textareaElement) {
     alert("Textarea element not found!");
@@ -28,152 +28,124 @@ function createPost(textareaElement) {
   }
 
   const postContent = textareaElement.value.trim();
+  if (!postContent) return;
+  if (!userManager.isLoggedIn()) return;
 
-  if (!postContent) {
-    return;
-  }
-
-  if (!userManager.isLoggedIn()) {
-    return;
-  }
-
-  let currentUser = userManager.getCurrentUser();
-
+  const currentUser = userManager.getCurrentUser();
   if (!currentUser || !currentUser.username) {
     alert("User data is invalid. Please log out and log back in.");
     return;
   }
 
-  // Find the posts container (could be posts-section or posts-feed)
+  // Generate unique ID for the post
+  const postId = Date.now();
+  const newPost = {
+    content: postContent,
+    timestamp: new Date().toISOString(),
+    id: postId,
+    authorId: currentUser.username,
+    likes: 0,
+    dislikes: 0,
+    likedBy: [],
+    dislikedBy: [],
+  };
+
+  try {
+    // Step 1: Get ALL current data from localStorage - DO NOT MODIFY ANYTHING
+    const allUsers = JSON.parse(
+      localStorage.getItem("crossvine_users") || "{}"
+    );
+
+    // Step 2: Get the current user's data from storage (not from userManager)
+    const storageUser = allUsers[currentUser.username] || currentUser;
+
+    // Step 3: Initialize posts array if needed
+    if (!storageUser.posts) storageUser.posts = [];
+
+    // Step 4: Add ONLY the new post to THIS user's posts
+    storageUser.posts.unshift(newPost);
+
+    // Step 5: Put the updated user back into allUsers
+    allUsers[currentUser.username] = storageUser;
+
+    // Step 6: Save everything back - OTHER USERS' DATA IS COMPLETELY UNTOUCHED
+    localStorage.setItem("crossvine_users", JSON.stringify(allUsers));
+
+    // Step 7: Update userManager to stay in sync
+    userManager.users[currentUser.username] = storageUser;
+    userManager.currentUser = storageUser;
+
+    // Step 8: Clear the form
+    textareaElement.value = "";
+    updateCharacterCount(textareaElement);
+
+    // Step 9: Add ONLY the new post to the DOM without touching existing posts
+    addSinglePostToDOM(newPost, storageUser);
+
+    console.log("New post created successfully without affecting other posts");
+  } catch (error) {
+    console.error("Error creating post:", error);
+    alert("Error creating post: " + error.message);
+  }
+}
+
+// Add single new post to DOM without touching existing posts
+function addSinglePostToDOM(newPost, user) {
+  // Find the posts container
   let postsContainer = document.querySelector(".posts-section");
   if (!postsContainer) {
     postsContainer = document.querySelector(".posts-feed");
   }
 
-  if (!postsContainer) {
-    alert("Posts container not found!");
-    return;
+  if (!postsContainer) return;
+
+  const title = postsContainer.querySelector("h3");
+  if (!title) return;
+
+  // Remove any "no posts" message if it exists
+  const noPostsMessage = postsContainer.querySelector(".no-posts-message");
+  if (noPostsMessage) {
+    noPostsMessage.remove();
   }
 
-  // Generate unique ID for the post
-  const postId = Date.now();
+  // Create the new post element
+  const newPostElement = document.createElement("div");
+  newPostElement.className = "post saved-post";
+  newPostElement.dataset.postId = newPost.id;
+  newPostElement.dataset.timestamp = new Date(newPost.timestamp).getTime();
+  newPostElement.dataset.isTextOnly = true;
 
-  // Clear the form
-  textareaElement.value = "";
-  updateCharacterCount(textareaElement);
+  const timeAgo = getTimeAgo(new Date(newPost.timestamp));
+  const currentUser = userManager.getCurrentUser();
+  const isOwner = currentUser && currentUser.username === newPost.authorId;
+  const deleteButton = isOwner
+    ? `<button class="delete-post-btn" onclick="deleteSavedPost(this, '${newPost.id}')">Delete</button>`
+    : "";
 
-  // Save post to user data and let loadSavedPosts() handle display
-  if (currentUser) {
-    if (!currentUser.posts) currentUser.posts = [];
+  newPostElement.innerHTML = `
+    <div class="post-content">
+      <p><strong><a href="#" onclick="viewUserProfile('${
+        user.username
+      }'); return false;" class="profile-link">${
+    user.username.startsWith("@") ? user.username : "@" + user.username
+  }</a>:</strong> ${newPost.content}</p>
+      <div class="post-actions">
+        <div class="vote-buttons">
+          <button class="like-btn" onclick="likePost('${newPost.id}')">
+            👍 <span class="like-count">0</span>
+          </button>
+          <button class="dislike-btn" onclick="dislikePost('${newPost.id}')">
+            👎 <span class="dislike-count">0</span>
+          </button>
+        </div>
+        <small>${timeAgo}</small>
+        ${deleteButton}
+      </div>
+    </div>
+  `;
 
-    const newPost = {
-      content: postContent,
-      timestamp: new Date().toISOString(),
-      id: postId,
-      authorId: currentUser.username,
-      likes: 0,
-      dislikes: 0,
-      likedBy: [],
-      dislikedBy: [],
-    };
-
-    try {
-      // Initialize posts array if it doesn't exist
-      if (!currentUser.posts) {
-        currentUser.posts = [];
-      }
-
-      // Simple storage check - only fail if we really can't store anything
-      try {
-        const testStore = JSON.stringify(currentUser);
-        if (testStore.length > 4000000) {
-          // Try to cleanup old posts to free space
-          const cleaned = cleanupOldPosts(currentUser);
-          if (cleaned) {
-            console.log("Cleaned up old posts to free storage space");
-          }
-        }
-      } catch (storageError) {
-        console.warn("Storage check failed, proceeding anyway:", storageError);
-      }
-
-      currentUser.posts.unshift(newPost);
-
-      // Save directly to localStorage using username-based object structure
-      const allUsers = JSON.parse(
-        localStorage.getItem("crossvine_users") || "{}"
-      );
-
-      // If user doesn't exist in storage, add them
-      if (!allUsers[currentUser.username]) {
-        allUsers[currentUser.username] = { ...currentUser };
-      }
-
-      // Update the user's posts
-      allUsers[currentUser.username].posts = currentUser.posts;
-
-      // Also update the userManager instance
-      userManager.users[currentUser.username] = allUsers[currentUser.username];
-      userManager.currentUser = allUsers[currentUser.username];
-
-      // Save to localStorage
-      localStorage.setItem("crossvine_users", JSON.stringify(allUsers));
-
-      // Clear the textarea
-      textareaElement.value = "";
-
-      // Refresh the posts display to show the new post from saved data
-      loadSavedPosts();
-      console.log("Posts reloaded - textarea cleared");
-    } catch (error) {
-      console.error("Error saving post:", error);
-      console.error("Error name:", error.name);
-      console.error("Error message:", error.message);
-
-      // Simple fallback - just save the post without complex checks
-      try {
-        console.log("Attempting simple save...");
-
-        // Ensure user has posts array
-        if (!currentUser.posts) {
-          currentUser.posts = [];
-        }
-
-        // Save to localStorage directly
-        const allUsers = JSON.parse(
-          localStorage.getItem("crossvine_users") || "{}"
-        );
-
-        // If user doesn't exist in storage, add them
-        if (!allUsers[currentUser.username]) {
-          allUsers[currentUser.username] = { ...currentUser };
-        }
-
-        // Update the user's posts
-        allUsers[currentUser.username].posts = currentUser.posts;
-
-        // Also update the userManager instance
-        userManager.users[currentUser.username] =
-          allUsers[currentUser.username];
-        userManager.currentUser = allUsers[currentUser.username];
-
-        // Save to localStorage
-        localStorage.setItem("crossvine_users", JSON.stringify(allUsers));
-
-        // Clear form
-        textareaElement.value = "";
-
-        // Reload posts
-        loadSavedPosts();
-        // Post saved successfully
-      } catch (retryError) {
-        console.error("Simple save also failed:", retryError);
-        alert(
-          `Unable to save post. Error: ${retryError.message}. Please check the console for details.`
-        );
-      }
-    }
-  }
+  // Insert the new post at the top (after the title)
+  title.insertAdjacentElement("afterend", newPostElement);
 }
 
 // Delete post function
@@ -230,8 +202,7 @@ function loadSavedPosts() {
     let allPosts = [];
 
     // Check if we're on the profile page and get which user's profile to show
-    const isProfilePage =
-      window.location.pathname.includes("demoProfile1.html");
+    const isProfilePage = window.location.pathname.includes("profile.html");
     let profileUserToShow = null;
 
     if (isProfilePage) {
@@ -258,11 +229,11 @@ function loadSavedPosts() {
         profileUserToShow.posts.length > 0
       ) {
         profileUserToShow.posts.forEach((post) => {
-          // Ensure post has proper like/dislike structure
-          if (!post.hasOwnProperty("likes")) post.likes = 0;
-          if (!post.hasOwnProperty("dislikes")) post.dislikes = 0;
-          if (!post.likedBy) post.likedBy = [];
-          if (!post.dislikedBy) post.dislikedBy = [];
+          // Ensure post has proper like/dislike structure (preserve existing values)
+          if (typeof post.likes !== "number") post.likes = 0;
+          if (typeof post.dislikes !== "number") post.dislikes = 0;
+          if (!Array.isArray(post.likedBy)) post.likedBy = [];
+          if (!Array.isArray(post.dislikedBy)) post.dislikedBy = [];
 
           allPosts.push({
             ...post,
@@ -278,11 +249,11 @@ function loadSavedPosts() {
       Object.values(allUsers).forEach((user) => {
         if (user.posts && Array.isArray(user.posts) && user.posts.length > 0) {
           user.posts.forEach((post) => {
-            // Ensure post has proper like/dislike structure
-            if (!post.hasOwnProperty("likes")) post.likes = 0;
-            if (!post.hasOwnProperty("dislikes")) post.dislikes = 0;
-            if (!post.likedBy) post.likedBy = [];
-            if (!post.dislikedBy) post.dislikedBy = [];
+            // Ensure post has proper like/dislike structure (preserve existing values)
+            if (typeof post.likes !== "number") post.likes = 0;
+            if (typeof post.dislikes !== "number") post.dislikes = 0;
+            if (!Array.isArray(post.likedBy)) post.likedBy = [];
+            if (!Array.isArray(post.dislikedBy)) post.dislikedBy = [];
 
             allPosts.push({
               ...post,
@@ -293,9 +264,7 @@ function loadSavedPosts() {
           });
         }
       });
-    }
-
-    // Find posts container
+    } // Find posts container
     let postsContainer = document.querySelector(".posts-section");
     if (!postsContainer) {
       postsContainer = document.querySelector(".posts-feed");
@@ -463,6 +432,63 @@ function loadSavedPosts() {
   }
 }
 
+// Add new post to DOM without reloading all posts
+function addNewPostToDOM(newPost, currentUser) {
+  // Find the posts container
+  let postsContainer = document.querySelector(".posts-section");
+  if (!postsContainer) {
+    postsContainer = document.querySelector(".posts-feed");
+  }
+
+  if (!postsContainer) return;
+
+  const title = postsContainer.querySelector("h3");
+  if (!title) return;
+
+  // Remove any "no posts" message if it exists
+  const noPostsMessage = postsContainer.querySelector(".no-posts-message");
+  if (noPostsMessage) {
+    noPostsMessage.remove();
+  }
+
+  // Create the new post element
+  const newPostElement = document.createElement("div");
+  newPostElement.className = "post saved-post";
+  newPostElement.dataset.postId = newPost.id;
+  newPostElement.dataset.timestamp = new Date(newPost.timestamp).getTime();
+  newPostElement.dataset.isTextOnly = true;
+
+  const timeAgo = getTimeAgo(new Date(newPost.timestamp));
+  const deleteButton = `<button class="delete-post-btn" onclick="deleteSavedPost(this, '${newPost.id}')">Delete</button>`;
+
+  newPostElement.innerHTML = `
+    <div class="post-content">
+      <p><strong><a href="#" onclick="viewUserProfile('${
+        currentUser.username
+      }'); return false;" class="profile-link">${
+    currentUser.username.startsWith("@")
+      ? currentUser.username
+      : "@" + currentUser.username
+  }</a>:</strong> ${newPost.content}</p>
+      <div class="post-actions">
+        <div class="vote-buttons">
+          <button class="like-btn" onclick="likePost('${newPost.id}')">
+            👍 <span class="like-count">0</span>
+          </button>
+          <button class="dislike-btn" onclick="dislikePost('${newPost.id}')">
+            👎 <span class="dislike-count">0</span>
+          </button>
+        </div>
+        <small>${timeAgo}</small>
+        ${deleteButton}
+      </div>
+    </div>
+  `;
+
+  // Insert the new post at the top (after the title)
+  title.insertAdjacentElement("afterend", newPostElement);
+}
+
 // Helper function to calculate time ago
 function getTimeAgo(date) {
   const now = new Date();
@@ -619,7 +645,7 @@ window.likePost = function (postId) {
     }
 
     // If we're on a profile page, check if we're viewing the post owner's profile
-    if (window.location.pathname.includes("demoProfile1.html")) {
+    if (window.location.pathname.includes("profile.html")) {
       const viewingProfileUsername = getCurrentlyViewedProfile();
       const profileBeingViewed = viewingProfileUsername || currentUser.username;
 
@@ -737,7 +763,7 @@ window.dislikePost = function (postId) {
     }
 
     // If we're on a profile page, check if we're viewing the post owner's profile
-    if (window.location.pathname.includes("demoProfile1.html")) {
+    if (window.location.pathname.includes("profile.html")) {
       const viewingProfileUsername = getCurrentlyViewedProfile();
       const profileBeingViewed = viewingProfileUsername || currentUser.username;
 
@@ -1022,7 +1048,7 @@ function goToMyProfile() {
   localStorage.removeItem("crossvine_viewing_profile");
 
   // Navigate to profile page
-  window.location.href = "demoProfile1.html";
+  window.location.href = "profile.html";
 }
 
 // Navigate to a user's profile
@@ -1036,7 +1062,7 @@ function viewUserProfile(username) {
   localStorage.setItem("crossvine_viewing_profile", username);
 
   // Navigate to profile page
-  window.location.href = "demoProfile1.html";
+  window.location.href = "profile.html";
 }
 
 // Get the currently viewed profile (for profile page)
@@ -1086,7 +1112,7 @@ let currentFilters = {
 
 // Initialize post filters
 function initializePostFilters() {
-  const isProfilePage = window.location.pathname.includes("demoProfile1.html");
+  const isProfilePage = window.location.pathname.includes("profile.html");
   const sortSelector = isProfilePage ? "#sortFilterProfile" : "#sortFilter";
   const textSelector = isProfilePage ? "#showTextProfile" : "#showText";
   const resetSelector = isProfilePage
@@ -1208,7 +1234,7 @@ function resetFilters() {
   };
 
   // Reset UI elements
-  const isProfilePage = window.location.pathname.includes("demoProfile1.html");
+  const isProfilePage = window.location.pathname.includes("profile.html");
   const sortSelector = isProfilePage ? "#sortFilterProfile" : "#sortFilter";
   const textSelector = isProfilePage ? "#showTextProfile" : "#showText";
 
@@ -1227,8 +1253,7 @@ function updatePostsTitle(filteredCount, totalCount) {
     document.querySelector(".posts-feed h3") ||
     document.querySelector(".posts-section h3");
   if (titleElement) {
-    const isProfilePage =
-      window.location.pathname.includes("demoProfile1.html");
+    const isProfilePage = window.location.pathname.includes("profile.html");
     const viewingProfile = getCurrentlyViewedProfile();
     const currentUser = userManager.getCurrentUser();
 
