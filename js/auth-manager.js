@@ -4,23 +4,51 @@
 function handleLogin(event) {
   event.preventDefault();
 
-  const username = document.getElementById("loginUsername").value;
-  const password = document.getElementById("loginPassword").value;
+  console.log("Login attempt started"); // Debug log
+
+  const usernameInput =
+    document.getElementById("loginUsername") ||
+    document.getElementById("username");
+  const passwordInput =
+    document.getElementById("loginPassword") ||
+    document.getElementById("password");
+
+  if (!usernameInput || !passwordInput) {
+    alert("Error: Login form elements not found.");
+    console.error("Form elements not found:", {
+      usernameInput: !!usernameInput,
+      passwordInput: !!passwordInput,
+    });
+    return;
+  }
+
+  const username = usernameInput.value;
+  const password = passwordInput.value;
 
   // Basic validation
   if (!username || !password) {
+    alert("Please fill in both username and password.");
     return;
   }
 
   try {
+    console.log("Attempting login for username:", username); // Debug log
+
     // Login user
     const user = userManager.login(username, password);
 
-    // Redirect to profile page
-    updateNavigation();
-    window.location.href = "profile.html";
+    if (user) {
+      console.log("Login successful"); // Debug log
+      // Redirect to home page
+      updateNavigation();
+      window.location.href = "index.html";
+    } else {
+      console.log("Login failed - no user returned"); // Debug log
+      alert("Login failed. Please check your credentials.");
+    }
   } catch (error) {
-    alert(error.message);
+    console.error("Login error:", error); // Debug log
+    alert(error.message || "Login failed. Please try again.");
   }
 }
 
@@ -74,10 +102,10 @@ async function handleRegister(event) {
     // Auto-login the new user
     userManager.login(username, password);
 
-    // Registration successful - redirect to profile
-    // Update navigation and redirect to profile
+    // Registration successful - redirect to home page
+    // Update navigation and redirect to home page
     updateNavigation();
-    window.location.href = "profile.html";
+    window.location.href = "index.html";
   } catch (error) {
     alert(error.message);
   }
@@ -103,6 +131,8 @@ function handleImagePreview(event) {
 function toggleLoginRegister(event) {
   event.preventDefault();
 
+  console.log("Toggle login/register called"); // Debug log
+
   const formTitle = document.getElementById("formTitle");
   const formSubtitle = document.getElementById("formSubtitle");
   const registerForm = document.getElementById("registerForm");
@@ -117,6 +147,7 @@ function toggleLoginRegister(event) {
   const isRegisterMode = formTitle.textContent === "Join Crossvine";
 
   if (isRegisterMode) {
+    console.log("Switching to login mode"); // Debug log
     // Switch to login mode
     formTitle.textContent = "Welcome Back";
     formSubtitle.textContent = "Sign in to your Crossvine account";
@@ -129,8 +160,28 @@ function toggleLoginRegister(event) {
     // Update password help text
     passwordHelp.textContent = "Enter your password";
 
-    // Update submit button - keep original styling
+    // Update submit button styling
     submitBtn.textContent = "Sign In";
+    submitBtn.className = "login-submit-btn";
+
+    // Clear the form and set up login fields
+    const form = document.getElementById("registerForm");
+    form.innerHTML = `
+      <div class="login-field">
+        <input type="text" id="loginUsername" placeholder="Enter your username" required />
+      </div>
+      <div class="login-field">
+        <input type="password" id="loginPassword" placeholder="Enter your password" required />
+      </div>
+      <button type="submit" class="login-submit-btn">Sign In</button>
+    `;
+
+    // Set up form submission
+    form.onsubmit = function (e) {
+      e.preventDefault();
+      console.log("Login form submitted"); // Debug log
+      handleLogin(e);
+    };
 
     // Update toggle link
     toggleLink.innerHTML = `
@@ -139,9 +190,6 @@ function toggleLoginRegister(event) {
         <a href="#" onclick="toggleLoginRegister(event)">Register here</a>
       </p>
     `;
-
-    // Change form submission handler
-    registerForm.setAttribute("onsubmit", "handleLoginFromRegisterPage(event)");
   } else {
     // Switch to register mode
     formTitle.textContent = "Join Crossvine";
@@ -160,6 +208,22 @@ function toggleLoginRegister(event) {
     submitBtn.textContent = "Create Account";
     submitBtn.className = "register-btn";
 
+    // Restore input fields to registration IDs
+    const usernameInput = document.getElementById("loginUsername");
+    if (usernameInput) {
+      usernameInput.setAttribute("id", "username");
+      usernameInput.setAttribute(
+        "placeholder",
+        "Enter username (e.g., @username)"
+      );
+    }
+
+    const passwordInput = document.getElementById("loginPassword");
+    if (passwordInput) {
+      passwordInput.setAttribute("id", "password");
+      passwordInput.setAttribute("placeholder", "Enter a secure password");
+    }
+
     // Update toggle link
     toggleLink.innerHTML = `
       <p>
@@ -177,8 +241,17 @@ function toggleLoginRegister(event) {
 function handleLoginFromRegisterPage(event) {
   event.preventDefault();
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  // Use the same fields from the registration form, as they're reused for login
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+
+  if (!usernameInput || !passwordInput) {
+    alert("Error: Login form elements not found");
+    return;
+  }
+
+  const username = usernameInput.value;
+  const password = passwordInput.value;
 
   // Basic validation
   if (!username || !password) {
@@ -190,10 +263,14 @@ function handleLoginFromRegisterPage(event) {
     // Login user
     const user = userManager.login(username, password);
 
-    // Update navigation and redirect to profile
-    updateNavigation();
-    window.location.href = "profile.html";
+    if (user) {
+      // Update navigation and redirect to home page
+      updateNavigation();
+      window.location.href = "index.html";
+    } else {
+      alert("Invalid username or password");
+    }
   } catch (error) {
-    alert(error.message);
+    alert(error.message || "Login failed. Please try again.");
   }
 }

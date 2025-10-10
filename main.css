@@ -130,7 +130,7 @@ body {
   align-items: center;
   gap: 8px;
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   pointer-events: none;
 }
 
@@ -669,7 +669,7 @@ body {
 }
 
 .reset-filters-btn {
-  background: #e74c3c;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
   border: none;
   padding: 8px 14px;
@@ -683,8 +683,9 @@ body {
 }
 
 .reset-filters-btn:hover {
-  background: #c0392b;
+  background: linear-gradient(135deg, #229954, #27ae60);
   transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(39, 174, 96, 0.2);
 }
 
 .reset-filters-btn:active {
@@ -711,6 +712,10 @@ body {
 
   .reset-filters-btn {
     align-self: center;
+  }
+
+  .search-container {
+    max-width: 300px;
   }
 }
 
@@ -924,11 +929,12 @@ body {
   flex: 1;
   max-width: 450px;
   background: white;
-  padding: 25px;
+  padding: 15px;
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   max-height: calc(100vh - 120px);
   overflow-y: auto;
+  border: 2px solid #27ae60;
 }
 
 .logo-display {
@@ -949,22 +955,22 @@ body {
 
 .register-container h1 {
   color: #2d5a3d;
-  font-size: 28px;
-  margin-bottom: 8px;
+  font-size: 20px;
+  margin-bottom: 4px;
   text-align: center;
 }
 
 .register-subtitle {
   color: #7f8c8d;
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
 }
 
 .form-group {
@@ -975,29 +981,29 @@ body {
 .form-group label {
   color: #2d5a3d;
   font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 2px;
+  font-size: 12px;
 }
 
 .form-group input,
 .form-group textarea {
-  padding: 10px 12px;
-  border: 2px solid #27ae60;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid #27ae60;
+  border-radius: 6px;
+  font-size: 12px;
   transition: all 0.3s ease;
-  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+  box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: #229954;
-  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+  box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
 }
 
 .form-group input[type="file"] {
-  padding: 6px;
+  padding: 3px;
   border-style: dashed;
   border-color: #27ae60;
   background-color: #f8f9fa;
@@ -1005,26 +1011,26 @@ body {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 60px;
+  min-height: 40px;
 }
 
 .form-help {
   color: #7f8c8d;
-  font-size: 11px;
-  margin-top: 3px;
+  font-size: 10px;
+  margin-top: 2px;
   font-style: italic;
 }
 
 .image-preview {
-  margin-top: 10px;
+  margin-top: 6px;
   text-align: center;
 }
 
 .image-preview img {
-  max-width: 150px;
-  max-height: 150px;
+  max-width: 100px;
+  max-height: 100px;
   border-radius: 50%;
-  border: 3px solid #27ae60;
+  border: 1px solid #27ae60;
   object-fit: cover;
 }
 
@@ -1032,19 +1038,19 @@ body {
   background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 .register-btn:hover {
   background: linear-gradient(135deg, #229954, #27ae60);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
 }
 
 .register-btn:active {
@@ -1053,14 +1059,14 @@ body {
 
 .login-link {
   text-align: center;
-  margin-top: 15px;
-  padding-top: 15px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid #ecf0f1;
 }
 
 .login-link p {
   color: #7f8c8d;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .login-link a {
@@ -1128,6 +1134,8 @@ body {
   outline: none;
   transition: all 0.3s ease;
   box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+  width: 100%;
+  min-width: 200px;
 }
 
 .login-field input:focus {
@@ -1279,9 +1287,12 @@ body {
 
 /* Dark mode text color adjustments */
 [data-theme="dark"] .register-container h1,
-[data-theme="dark"] .profile-header .username,
-[data-theme="dark"] .posts-section h3 {
+[data-theme="dark"] .profile-header .username {
   color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .posts-section h3 {
+  color: #4caf50 !important;
 }
 
 [data-theme="dark"] .register-subtitle {
@@ -1292,7 +1303,7 @@ body {
 /* Dark mode filter styles */
 [data-theme="dark"] .post-filters {
   background-color: rgba(52, 73, 94, 0.9) !important;
-  border-color: var(--border-color) !important;
+  border: 2px solid #27ae60 !important;
 }
 
 [data-theme="dark"] .filter-section h4 {
@@ -1315,11 +1326,12 @@ body {
 }
 
 [data-theme="dark"] .reset-filters-btn {
-  background: #ff0000 !important;
+  background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
 }
 
 [data-theme="dark"] .reset-filters-btn:hover {
-  background: #d35400 !important;
+  background: linear-gradient(135deg, #229954, #27ae60) !important;
+  box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3) !important;
 }
 
 [data-theme="dark"] .profile-header,
@@ -1327,7 +1339,7 @@ body {
 [data-theme="dark"] .create-post-section,
 [data-theme="dark"] .posts-feed {
   background-color: rgba(52, 73, 94, 0.9) !important;
-  border-color: var(--border-color) !important;
+  border: 2px solid #27ae60 !important;
 }
 
 [data-theme="dark"] .create-post-section h3,
@@ -1516,18 +1528,20 @@ body {
 }
 
 [data-theme="dark"] .login-submit-btn {
-  background: var(--accent-color);
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
 }
 
 [data-theme="dark"] .login-submit-btn:hover {
-  background: #219a52;
+  background: linear-gradient(135deg, #229954, #27ae60);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
 }
 
 /* Dark mode profile sidebar styles */
 [data-theme="dark"] .profile-sidebar {
   background-color: rgba(52, 73, 94, 0.9) !important;
-  border-color: var(--border-color) !important;
+  border: 2px solid #27ae60 !important;
 }
 
 [data-theme="dark"] .profile-username {

@@ -110,11 +110,26 @@ class UserManager {
 
   // Login user
   login(username, password) {
-    const user = this.users[username];
-    if (!user || user.password !== password) {
+    console.log("Login attempt for:", username); // Debug log
+    console.log("Available users:", Object.keys(this.users)); // Debug log
+
+    // Handle usernames with or without @ prefix
+    const normalizedUsername = username.startsWith("@")
+      ? username
+      : "@" + username;
+    const user = this.users[normalizedUsername];
+
+    if (!user) {
+      console.log("User not found"); // Debug log
       throw new Error("Invalid username or password!");
     }
 
+    if (user.password !== password) {
+      console.log("Password mismatch"); // Debug log
+      throw new Error("Invalid username or password!");
+    }
+
+    console.log("Login successful for:", normalizedUsername); // Debug log
     this.currentUser = { ...user };
     this.saveCurrentUser();
     return this.currentUser;
